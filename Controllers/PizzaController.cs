@@ -1,5 +1,6 @@
 ﻿using la_mia_pizzeria_post.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
 
 namespace la_mia_pizzeria_post.Controllers
@@ -7,28 +8,12 @@ namespace la_mia_pizzeria_post.Controllers
     public class PizzaController : Controller
     {
 
-        //public List<Pizza> getPizze()
-        //{
-        //    //List<Pizza> pizzeList = new()
-        //    //{
-        //    //    new Pizza("Margherita", "pomodoro, mozzarella", "/img/pizza1.png", 10.99F ),
-        //    //    new Pizza("Marinara", "pomodoro, aglio rosmarino", "/img/pizza2.png", 7.99F),
-        //    //    new Pizza("Lombarda", "pomodoro, mozzarella, carciofi, grana", "/img/pizza3.png", 11.99F),
-        //    //    new Pizza("Pugliese", "pomodoro, mozzarella, capperi, aciughe", "/img/pizza4.png", 10.99F)
-
-        //    //};
-        //    //return pizzeList;
-
-
-        //}
-
         public IActionResult Index()
         {
-            // Read
-           
-                return View("Home");
-
+            return View("Home");
         }
+
+        [HttpGet]
         public IActionResult Pizze()
         {
             using (PizzeriaContext db = new())
@@ -40,11 +25,12 @@ namespace la_mia_pizzeria_post.Controllers
             }
         }
 
+        [HttpGet]
         public IActionResult Show(int id)
         {
             using (PizzeriaContext db = new())
             {
-                Pizza searchedPizza = db.Pizzas.Where(pizza=>pizza.Id == id).FirstOrDefault();
+                Pizza searchedPizza = db.Pizzas.Where(pizza => pizza.Id == id).FirstOrDefault();
                 if (searchedPizza == null)
                 {
                     return NotFound("Non è stata trovata nessuna corrispondenza");
@@ -55,6 +41,36 @@ namespace la_mia_pizzeria_post.Controllers
                 }
             }
         }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+       
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Pizza pizzaData)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("Create", pizzaData);
+            }
+            using (PizzeriaContext db = new())
+            {
+                Pizza newPizza = new();
+                newPizza.Id = pizzaData.Id;
+                newPizza.Name = pizzaData.Name;
+                newPizza.Description = pizzaData.Description;
+                newPizza.Image = pizzaData.Image;
+                newPizza.Price = pizzaData.Price;
+                db.Pizzas.Add(newPizza);
+                db.SaveChanges();
+                return RedirectToAction("Pizze");
+            }
+        }
+        
+
 
         public IActionResult Privacy()
         {

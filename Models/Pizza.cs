@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using la_mia_pizzeria_static.Models;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace la_mia_pizzeria_post.Models
@@ -14,6 +15,7 @@ namespace la_mia_pizzeria_post.Models
         public string? Name { get; set; }
         [Column("description")]
         [Required(ErrorMessage = "La descrizione è obbligatoria")]
+        [SetCorrectLenghtValidation]
         public string? Description { get; set; }
         [Column("Image")]
         [Required(ErrorMessage = "L'immagine è obbligatoria")]
