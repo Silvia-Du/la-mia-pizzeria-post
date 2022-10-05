@@ -1,0 +1,41 @@
+﻿@{
+    @model List<Pizza>;
+
+    Layout = "Guest/_Layout";
+}
+    
+    <h2 class="mb-3">Menu</h2>
+    <div class="pizza-container container">
+        <div class="row">
+            @*se ci sono risultati*@
+            @if(@Model.Count() != 0){
+
+                @for (var i = 0; i < Model.Count; i++)
+                {
+                    <div class="col-4 p-2 mb-3">
+                    
+                         <div class="px-1 py-3 debug">
+                            <h3>@Model[i].Name</h3>
+                                <img src="@Model[i].Image" class="mb-2"/>
+
+                                <h6>Euro: @Model[i].Price</h6>
+                                <p>@Model[i].Description</p>
+                                <a class="btn_show px-3 py-2 rounded-pill" href="@Url.Action("Show", "Pizza", new{Id = i})">View more</a>    
+                        </div> 
+                    
+                    </div> 
+                }
+            @*se non ci sono risultati*@
+            }else{
+
+                <div class="pt-3">
+                    <h3>Non ci sono risultati</h3>
+                </div>
+            }
+
+           
+        </div>
+    </div>
+
+
+
